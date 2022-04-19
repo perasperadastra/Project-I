@@ -29,6 +29,7 @@
 - [Input parameters](#parameters)
 - [Output files and plots](#output)
 - [Tests](#tests)
+- [Benchmark](#benchmark)
 - [Built Using](#built_using)
 - [TODO](#todo)
 - [Contributing](../CONTRIBUTING.md)
@@ -178,6 +179,16 @@ This directory also contains a [folder](./output/Helium@300K_example/) with the 
 
 Tests will be implemented in the next version.
 
+### Benchmark  <a name = "benchmark"></a>
+
+For the purpose, of maken easier to the user to decide the best parameters of a simulation, we have inglude the tool checck_parallel. This tool permits to run thorugh a selected range of processors and 125, 1000 and 10648 particles sets. The simulation always is runned for 1000 steps over all the range, but, you can choose the rest of parameters in the input file as the like any other simulation. To use the benchmark tool run the following commands, designed to run process from **MPI_minP=2** to **MPI_maxP=8** every  **MPI_stepP=2**.
+```
+make stats MPI_minP=2 MPI_maxP=8 MPI_stepP=2
+```
+Also this can be fixed modifying the top makefile of the program.
+Al the information relevant to this process can be accessed in the *bench.log file*, while the data is saved the *performance.dat* file, in the results directory. In the performance file the data ara arrange in three columns, particles, processors and seconds of CPU time, respectively.
+
+**NOTICE TO USERS**: The benchmark tool is very sensitive to the installation, check always the installation and that it runs correctly before run large simulations.
 ## Built Using <a name = "built_using"></a>
 
 - [Fortran](https://fortran-lang.org/) - Fortran programming language
