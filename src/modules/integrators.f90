@@ -38,8 +38,8 @@
 !                     - vel (velocity)(inout) : double precision array
 !                     - Upot (potential energy) (out) : double precision scalar
 !                     - Pressp (pressure) (out) : double precision scalar
-! Dependencies:
-!      - force() : In module forces (src/modules/forces.f90)
+!             Dependencies:
+!                     - force() : In module forces (src/modules/forces.f90)
 !
 !
 !       -> vel_verlet_with_thermo (natoms,r,vel,F,Upot,dt,rc,boxlength,Temp,pressp,gr,deltag):
@@ -61,9 +61,9 @@
 !                     - Upot (potential energy)(out) : double precision scalar
 !                     - temp (temperature)(in) : double precision scalar
 !                     - Pressp (pressure) (out) : double precision scalar
-! Dependencies:
-!      - force() : In module forces (src/modules/forces.f90)
-!      - andersen_thermo() : In module thermostat (src/modules/thermostats.f90)
+!             Dependencies:
+!                     - force() : In module forces (src/modules/forces.f90)
+!                     - andersen_thermo() : In module thermostat (src/modules/thermostats.f90)
 !=====================================================================================!
 module integrators
     use forces
@@ -124,8 +124,6 @@ contains
                                 MPI_COMM_WORLD, ierror)
         end do
         call MPI_BARRIER(MPI_COMM_WORLD, ierror)
-        ! allgather should be applied into the the r and vel array
-        ! <------- aqui se necesita haber repartido todas las posiciones
         call force(natoms, r, boxlength, rc, F, particle_range)
 
         call potential(natoms, r, boxlength, rc, epot, pressp, gr, deltag, particle_range, taskid)
@@ -138,7 +136,6 @@ contains
                 vel(jv, ii) = vel(jv, ii) + F(jv, ii)*0.5d0*dt
             end do
         end do
-        ! allgather should be applied into the the r and vel array
 
     end subroutine vel_verlet
 
@@ -195,8 +192,6 @@ contains
                                 MPI_COMM_WORLD, ierror)
         end do
         call MPI_BARRIER(MPI_COMM_WORLD, ierror)
-        ! allgather should be applied into the the r and vel array
-        ! <------- aqui se necesita haber repartido todas las posiciones
         call force(natoms, r, boxlength, rc, F, particle_range)
 
         call potential(natoms, r, boxlength, rc, epot, pressp, gr, deltag, particle_range, taskid)

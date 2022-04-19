@@ -11,9 +11,9 @@
 !                                                        - natom (number of atoms) (in): integer scalar
 !                                                        - r(coordinater)(inout): double precision array
 !                                                        - boxlength (in) : double precision scalar
-!                                             - rc(cutoff radius)(in):  double precision scalar
+!                                                        - rc(cutoff radius)(in):  double precision scalar
 !                                                        - F (forces) (inout): double precision array
-!                                               - deltag (in): double precision scalar
+!                                                        - deltag (in): double precision scalar
 !                                                        - gr (g(r)) (out): double precision array
 !                                         Output:
 !                                                        - epot (E potential) (out): double precision scalar
@@ -54,17 +54,17 @@ contains
 !                - natom (number of atoms) (in): integer scalar
 !                                        Total numbe of atoms in the system.
 !                - r(coordinater)(inout): double precision array
-!                              Array which contains the positions of the atoms in the lattice
+!                                        Array which contains the positions of the atoms in the lattice
 !
 !                - boxlength (in) : double precision scalar
 !
-!     - rc(cutoff radius)(in):  double precision scalar
+!                - rc(cutoff radius)(in):  double precision scalar
 !                                        Cutoff radius from which interactions are neglected
 !
 !                - F (forces) (inout): double precision array
 !                                        Array of the interacting forces on each atom of the simulation box.
 !
-!     - deltag (in): double precision scalar
+!                - deltag (in): double precision scalar
 !                                        Width of the bin of the rdf
 !
 !                - gr (g(r)) (out): double precision array
@@ -76,7 +76,7 @@ contains
 !                - press (pressure) (out): double precision scalar
 !                                        Potential pressure term  calculated at each time step
 ! Depencency:
-!                - lj() : Tool in thi module
+!                - lj(): Tool in thi module
 !
 !==============================================================================!
     subroutine force(natoms, r, boxlength, rc, F, particle_range)
@@ -154,7 +154,6 @@ contains
         call MPI_REDUCE(press, pressp, 1, MPI_DOUBLE_PRECISION, MPI_SUM, 0, MPI_COMM_WORLD, ierror)
         if (taskid .eq. 0) then
             Upot = Upot/2.d0; pressp = pressp/2
-            !print*, 'forces', Upot
             cutoff_press = factp*((2.d0/3.d0)/(rc**9.) - 1.d0/(rc**3.))
             pressp = pressp/(3.d0*vol) + cutoff_press
         end if
@@ -169,7 +168,7 @@ contains
 !                              Array which contains the positions of the atoms in the lattice
 !                -boxlength (in) : double precision scalar
 !                                        Length of the box of simulation
-!     -rc(cutoff radius)(in):  double precision scalar
+!                -rc(cutoff radius)(in):  double precision scalar
 !                                        Cutoff radius from which interactions are neglected
 !                -ii (in): integer scalar
 !                                        Index of the first particle which is looped around
@@ -181,13 +180,13 @@ contains
 ! Output:
 !                -pot (potential energy) (out): double precision array
 !                                        Potential energy interaction between i and j elements
-!                 -piter (potential pressure) (out):
+!                -piter (potential pressure) (out):
 !                                        Potential pressure term from interaction between particles i and j
-!     -d  (distance) (in)
+!                -d  (distance) (in)
 !                                        Distance between particles i and j
 !
 ! Depencency:
-!     -pbc(): Tool in boundary module
+!                -pbc(): Tool in boundary module
 !==============================================================================!
     subroutine lj(r, boxlength, rc, ii, jj, F, particle_range)
         integer, intent(in) :: particle_range(2)
