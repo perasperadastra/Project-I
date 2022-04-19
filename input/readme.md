@@ -18,6 +18,8 @@ For reproducibility you can decide a seed for the random number generator that a
 
 The initial velocities of the particles can be setted up to 0 or to a bimodal distribution. To choose use the **vel_opt** parameter (= 1, bimodal) (= 0, zero initial velocities).
 
+The integrated algorithms can be the Velocity Verlet with thermostat (= 1) or without thermostat (= 0). 
+
 To control de time step change the **dt** parameter (in ps units) less than 0.01 ps make in the simulation unstable. The number of steps that will be computed is selected in the **ntimes** parameter. 
 
 The output information frequency is controlled by the **everyt** parameter. AVOID HIGH RATES OF PRINTIN!!! Printing is a limiting stage in this software.
