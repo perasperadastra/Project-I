@@ -11,7 +11,7 @@ Can be generated three type of lattices:
   * Also it will be implemented a read from file subroutine in the next version.
 
 #### Density
-The density have units of kg/m^3 .
+The density have units of kg/m^3 . Must specify the number of atoms per side. 
 
 
 #### Temperature
