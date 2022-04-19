@@ -304,14 +304,14 @@ contains
 !=====================================================================================!
 ! Input:
 !         - N (number of sides of the execute_command_line)(in): integer scalar
-!    - coord_path (path to the xyz fle containing the structure)(in): character
+!         - coord_path (path to the xyz fle containing the structure)(in): character
 !         - vel_path (path to velocities file)(inout): OPTIONAL, empty array
-!          - initial_velocities (velocidades iniciales)(inout): OPTIONAL, empty array
-!          - initial_position (posiciones iniciales)(inout): OPTIONAL, empty array
+!         - initial_velocities (velocidades iniciales)(inout): OPTIONAL, empty array
+!         - initial_position (posiciones iniciales)(inout): OPTIONAL, empty array
 !
 ! Output:
 !         - initial_velocities (velocidades iniciales)(inout): OPTIONAL, empty array
-!          - initial_position (posiciones iniciales)(inout): OPTIONAL, empty array
+!         - initial_position (posiciones iniciales)(inout): OPTIONAL, empty array
 !=====================================================================================!
 
     subroutine initial_reading(N, coord_path, initial_position, initial_velocities, vel_path)
