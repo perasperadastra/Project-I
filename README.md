@@ -1,6 +1,6 @@
 <p align="center">
   <a href="" rel="noopener">
- <img width=200px height=200px src="./imgs/cs_latt.png" alt="Project logo"></a>
+ <img width=200px height=200px src="./imgs/vmdscene_fcc.png" alt="Project logo"></a>
 </p>
 
 <h3 align="center">Molecular Dynamics Simulation of a Van der Waals Gas</h3>
@@ -16,7 +16,7 @@
 
 ---
 
-<p align="center"> The main of this project is to create a simple parallel Molecular Dynamics simulation code. It is the final project of Advanced computation tools course of the Atomistic and Multiscale Computational Modelling in Physics, Chemistry and Biochemistry Master at the Universitat de Barcelona.
+<p align="center"> The main goal of this project is to create a simple parallel Molecular Dynamics simulation code. This task constitutes the final project of the Advanced Computation Tools course of the Atomistic and Multiscale Computational Modelling in Physics, Chemistry and Biochemistry Master at the Universitat de Barcelona.
     <br> 
 </p>
 
@@ -35,20 +35,23 @@
 - [Authors](#authors)
 
 ## About <a name = "about"></a>
-In this project we aim to develop a simple parallel Molecular Dynamics simulation code. We implement three possible initial structures (sc, fcc, diamond) and two initial configurations (bimodal distribution or velocities starting at 0). Additionally, we implement two different integration algorithms (the velocity verlet with and without thermostat andersen). The Lennard-Jones potential is used.
+In this project we aim to develop a simple parallel Molecular Dynamics simulation code. We implement three possible initial structures (sc, fcc, diamond) and two initial configurations (bimodal distribution or velocities starting at 0). Additionally, we implement two different integration algorithms (the velocity verlet with and without andersen thermostat). The Lennard-Jones potential is used as the pair interaction potential.
 
 ## Getting Started <a name = "getting_started"></a>
 
-These instructions will get you a copy of the project up and running on your local machine for development and testing purposes. See [deployment](#deployment) for notes on how to deploy the project on a live system.
+These instructions will get you a copy of the project up and running on your local machine for development and testing purposes.
 
 ### Prerequisites  <a name = "prerequisites"></a>
 
-The core of this program works in FORTRAN 90, so a FORTRAN compiler must be installed before trying to build the code. We higly reccoment to install [gfortran](https://gcc.gnu.org/wiki/GFortran). The following commands demonstrate how to install it in Ubuntu Linux:
+This program is built in Fortran90, so a Fortran compiler must be installed before trying to build the code. As this version of the code works in parallel, the program uses the OpenMPI message passing interface to send messages between processors.
+In order to be able to compile and run this software, the OpenMPI library is needed, [OpenMPI](https://www.open-mpi.org/).
+
+Additionally a Fortran compiler able to compile and link MPI programs is needed. We recommend the [mpifort](https://www.open-mpi.org/doc/v4.0/man1/mpifort.1.php) compiler, which is included in some OpenMPI distributions. The following command shows how to install OpenMPI in Ubuntu Linux:
 ```
-sudo apt update && sudo apt install gfortran -y
+sudo apt update && sudo apt install gcc gfortran openmpi-bin openmpi-common libopenmpi-dev -y
 ```
 
-Python is used for the results plotting and representation. A python version higher or equal than `python 3.6` is needed, and additionally the following libraries are needed:
+Furthermore, python is used for the results plotting and representation. A python version higher or equal than `python 3.6` is needed, and additionally the following libraries are needed:
 
 - [numpy](https://numpy.org/)
 - [matplotlib](https://matplotlib.org/)
@@ -65,18 +68,17 @@ python -m pip install -r requirements.txt
 
 Donwload the zip file and uncompress in your working directory, you can use:
 
-
 ```
 unzip Project-I-master.zip 
 ```
 
-Move to main directory and run:
+Change to the main directory and run:
 
 ```
-make
+make MPI_NPROC=n
 ```
-
-To run a simulation you must modify the parameter.h file, in the input directory, se the input parameter section. Since it is necessary to recompile if you want to add the changes on the input parameters, we recommend to use the command
+Where 'n' is the number of processors that you want to use. The default is 4 processors.
+To change any simulation settings you must modify the [parameter.h](input/parameter.h) file, in the input directory. (Please, see the [Input parameters section](#parameters)). It is necessary to recompile after any changes are made to the input parameters. After any change we recommend to use the command
 
 ```
 make
@@ -90,6 +92,11 @@ Nonetheless, it can be done in three steps by the following terminal commands:
 make compile
 make run
 make plot
+```
+For single processor testing, the mpirun flag `--use-hwthread-cpus` can be added when executing the makefile in order to use the hardware threads of the main cpu. For example:
+
+```
+make MPI_NPROC=8 MPI_FLAGS=--use-hwthread-cpus
 ```
 
 
@@ -173,10 +180,11 @@ Tests will be implemented in the next version.
 
 ## Built Using <a name = "built_using"></a>
 
-- [Fortran](https://fortran-lang.org/) - Fortran
-- [Python](https://www.python.org/) - Python
-- [Numpy](https://numpy.org/) - numpy module
-- [Matplotlib](https://matplotlib.org/) - matplotlib module
+- [Fortran](https://fortran-lang.org/) - Fortran programming language
+- [OpenMPI](https://www.open-mpi.org/) - Open Source MPI Library
+- [Python](https://www.python.org/) - Python programming language
+- [Numpy](https://numpy.org/) - Numerical computation module for paython
+- [Matplotlib](https://matplotlib.org/) - Graphical plotting module for python
 
 
 ## TODO <a name = "todo"></a>
@@ -190,13 +198,12 @@ Tests will be implemented in the next version.
   - kinetic: Lucas
   - andersen thermostat: Raul
 - Integration:
-  - euler: Pol
   - velocity verlet: Pol
   - velocity verlet with thermostat: Marc
 - Forces:
   - Force + Lj: Lucas
 - Statistic:
-  - g(r): Pol     
+  - g(r): Pol
 
 ## Authors <a name = "authors"></a>
 - [@LucasFernandezStolpa](https://github.com/LucasFernandezStolpa) - Coordinator
@@ -204,5 +211,5 @@ Tests will be implemented in the next version.
 - [@pol-sb](https://github.com/pol-sb)
 - [@Mtunica](https://github.com/Mtunica)
 
-See also the list of [contributors](https://github.com/Eines-Informatiques-Avancades/Project-I/contributors) who participated in this project.
+See also statistics about the [contributors](https://github.com/Eines-Informatiques-Avancades/Project-I/contributors) who participated in this project.
 

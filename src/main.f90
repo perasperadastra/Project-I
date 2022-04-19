@@ -24,7 +24,7 @@ program main
     integer, allocatable :: interact_list(:, :), sizes(:), displs(:)
     integer :: particle_range(2), interact_range(2)
     double precision :: start_time, finish_time
-!Change units
+    !Change units
     double precision::density_au, time, time_fact, epsLJ, temp_fact, press_fact
 
     call MPI_INIT(ierror) ! Begin parallel execution code
@@ -45,38 +45,52 @@ program main
     seed(1:33) = rng_seed + taskid
     call random_seed(put=seed)
 
-	    !Initialization of the structure
-	    if (structure .eq. 1) then
-	        natoms = Nc*Nc*Nc
-					call reduced(taskid,epsilon,sigma,temp,density,natoms,dt,ntimes,thermo,&
-	 		 									epsLJ,time_fact,press_fact,temp_fact)
-	        L = (float(natoms)/density)**(1.0/3.0)
-	        allocate (r(natoms, 3))
-	        if (taskid .eq. 0) then
-	            call initial_configuration_SC(Nc, L, r, sigma)
-	        end if
-	    elseif (structure .eq. 2) then
-	        natoms = Nc*Nc*Nc*4
-					call reduced(taskid,epsilon,sigma,temp,density,natoms,dt,ntimes,thermo,&
-	 		 									epsLJ,time_fact,press_fact,temp_fact)
-	        L = (float(natoms)/density)**(1.0/3.0)
-	        allocate (r(natoms, 3))
-	        if (taskid .eq. 0) then
-	            call initial_configuration_fcc(Nc, L, r, sigma)
-	        end if
-	    elseif (structure .eq. 3) then
-	        natoms = Nc*Nc*Nc*8
-					call reduced(taskid,epsilon,sigma,temp,density,natoms,dt,ntimes,thermo,&
-	 		 									epsLJ,time_fact,press_fact,temp_fact)
-	        L = (float(natoms)/density)**(1.0/3.0)
-	        allocate (r(natoms, 3))
-	        if (taskid .eq. 0) then
-	            call initial_configuration_diamond(Nc, L, r, sigma)
-	        end if
-	    else
-	        write (*, *) "Input Error: no structure found. Please input a valid structure."
-	        stop
-	    end if
+    ! Initialization of the system structure
+    ! Simple Cubic (SC) structure
+    if (structure .eq. 1) then
+        natoms = Nc*Nc*Nc
+
+        call reduced(taskid, epsilon, sigma, temp, density, natoms, dt, &
+                     ntimes, thermo, epsLJ, time_fact, press_fact, temp_fact)
+
+        L = (float(natoms)/density)**(1.0/3.0)
+        allocate (r(natoms, 3))
+
+        if (taskid .eq. 0) then
+            call initial_configuration_SC(Nc, L, r, sigma)
+        end if
+
+        ! Face-centered Cubic (FCC) structure
+    elseif (structure .eq. 2) then
+        natoms = Nc*Nc*Nc*4
+
+        call reduced(taskid, epsilon, sigma, temp, density, natoms, dt, &
+                     ntimes, thermo, epsLJ, time_fact, press_fact, temp_fact)
+
+        L = (float(natoms)/density)**(1.0/3.0)
+        allocate (r(natoms, 3))
+
+        if (taskid .eq. 0) then
+            call initial_configuration_fcc(Nc, L, r, sigma)
+        end if
+
+        ! Diamond structure
+    elseif (structure .eq. 3) then
+        natoms = Nc*Nc*Nc*8
+
+        call reduced(taskid, epsilon, sigma, temp, density, natoms, dt, &
+                     ntimes, thermo, epsLJ, time_fact, press_fact, temp_fact)
+
+        L = (float(natoms)/density)**(1.0/3.0)
+        allocate (r(natoms, 3))
+
+        if (taskid .eq. 0) then
+            call initial_configuration_diamond(Nc, L, r, sigma)
+        end if
+    else
+        write (*, *) "Input Error: no structure found. Please input a valid structure."
+        stop
+    end if
 
     ! -------------------------------------------------------------------------- !
     ! Select range of particles for each processor

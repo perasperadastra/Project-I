@@ -412,70 +412,100 @@ contains
 
     end subroutine bimodal
 
-	 subroutine reduced(taskid,epsilon,sigma,temp,density,natoms,dt,ntimes,thermo,&
-		 									epsLJ,time_fact,press_fact,temp_fact)
-		 include "constants.h"
-		 integer, intent(in) :: taskid, natoms, ntimes, thermo
-		 double precision, intent(in) :: epsilon, sigma
-		 double precision, intent(inout) :: density, dt, temp
-		 double precision, intent(out) :: epsLJ, temp_fact, time_fact, press_fact
+!==============================================================================!
+!                      REDUCED UNITS CONVERSION
+!==============================================================================!
+! Input:
+!         - taskid (task id)(in): integer scalar
+!         - epsilon (epsilon value)(in): double precision scalar
+!         - sigma (sigma value)(in): double precision scalar
+!         - temp (temperature)(in): double precision scalar
+!         - density (density value)(in): double precision scalar
+!         - natoms (number of atoms)(in): integer scalar
+!         - dt (time step)(in): double precision scalar
+!         - ntimes (number of time steps)(in): integer scalar
+!         - thermostat (thermostat type)(in): character
+!         - epsLJ (epsilon value for LJ potential)(in): double precision scalar
+!         - time_factor (time factor)(in): double precision scalar
+!         - press_factor (pressure factor)(in): double precision scalar
+!         - temp_factor (temperature factor)(in): double precision scalar
+!
+! Output:
+!         - Values in reduced units
+!==============================================================================!
 
-		 if (taskid .eq. 0) then
-				 print *, ''
-				 print *, '┌', repeat("─", 64), '┐'
-				 print *, '│                Molecular Dynamics Simulation                   │ '
-				 print *, '│     System of Partciles with Lennard-Jones Interaction         │ '
-				 print *, '└', repeat("─", 64), '┘'
+    subroutine reduced(taskid, epsilon, sigma, temp, density, natoms, dt, ntimes, thermo, &
+                       epsLJ, time_fact, press_fact, temp_fact)
+        include "constants.h"
+        integer, intent(in) :: taskid, natoms, ntimes, thermo
+        double precision, intent(in) :: epsilon, sigma
+        double precision, intent(inout) :: density, dt, temp
+        double precision, intent(out) :: epsLJ, temp_fact, time_fact, press_fact
 
-				 print 300, natoms
-				 300         format(' Number of particles:', 9x, i3)
+        if (taskid .eq. 0) then
+            print *, ''
+            print *, '┌', repeat("─", 64), '┐'
+            print *, '│                Molecular Dynamics Simulation                   │ '
+            print *, '│     System of Partciles with Lennard-Jones Interaction         │ '
+            print *, '└', repeat("─", 64), '┘'
 
-				 print 301, density
-				 301 format(' Density (kg/m^3):', 9x, f8.3)
+            print 300, natoms
+            300 format(' Number of particles:', 9x, i3)
 
-				 print 302, epsilon
-				 302 format(' L-J Well depth (K):', 8x, f8.3)
+            print 301, density
+            301 format(' Density (kg/m^3):', 9x, f8.3)
 
-				 print 303, sigma
-				 303 format(' Characteristic length (A):', f8.3)
+            print 302, epsilon
+            302 format(' L-J Well depth (K):', 8x, f8.3)
 
-				 print 304, temp
-				 304 format(' Thermostat temperature (K):', f8.2)
+            print 303, sigma
+            303 format(' Characteristic length (A):', f8.3)
 
-				 print 305, temp
-				 305 format(' Initial temperature (K):', 3x, f8.2)
+            print 304, temp
+            304 format(' Thermostat temperature (K):', f8.2)
 
-				 if (thermo .eq. 0) then
-						 print 306
-						 306 format(' Integrator:', 18x, 'Verlet')
-				 elseif (thermo .eq. 1) then
-						 print 307
-						 307 format(' Integrator:', 18x, 'Verlet with thermostat')
-				 end if
+            print 305, temp
+            305 format(' Initial temperature (K):', 3x, f8.2)
 
-				 print 308, dt
-				 308 format(' Time step (ps):', 11x, f8.3)
+            if (thermo .eq. 0) then
+                print 306
+                306 format(' Integrator:', 18x, 'Verlet')
+            elseif (thermo .eq. 1) then
+                print 307
+                307 format(' Integrator:', 18x, 'Verlet with thermostat')
+            end if
 
-				 print 309, ntimes
-				 309 format(' Steps:', 20x, i9)
+            print 308, dt
+            308 format(' Time step (ps):', 11x, f8.3)
 
-		 end if
- 	! -------------------------------------------------------------------------- !
- 		!Change units
- 			temp_fact = epsilon ! r.u. -> K
- 			epsLJ = epsilon*boltzmann_constant*avogadro_number*1.d-3 ! K -> kJ/mol
- 			temp=temp/temp_fact
- 	    density = density*avogadro_number/(atomic_mass*1.d4)
- 			! converting density from kg/m^3 to particles/angstrom^3
- 			density = density*(sigma**3.d0) ! particles/angstrom -> r.u.
- 			time_fact = (1.d2)*(sigma*dsqrt(atomic_mass*dble(natoms)*1.d-3/(avogadro_number*&
- 									epsilon*boltzmann_constant))) ! r.u. -> ps
- 			dt = dt/time_fact
- 			!print*, 'time parameters', time_fact, dt, dble(ntimes)*dt
- 			!print*, 'density r.u.', density, (float(natoms)/density)**(1.0/3.0)
- 			press_fact = epsLJ/(avogadro_number*(sigma**3)*1.d-4) ! r.u. -> MPa
+            print 309, ntimes
+            309 format(' Steps:', 20x, i9)
 
-			return
-	 end subroutine reduced
+        end if
+
+        ! ---------------------------------------------------------------------!
+        ! Unit Conversion
+        ! Factor to convert the temp from r.u. to K
+        temp_fact = epsilon
+        temp = temp/temp_fact
+
+        ! Converting the LJ epsilon from K to kJ/mol
+        epsLJ = epsilon*boltzmann_constant*avogadro_number*1.d-3
+
+        ! converting density from kg/m^3 to particles/angstrom^3
+        density = density*avogadro_number/(atomic_mass*1.d4)
+        ! particles/angstrom -> r.u.
+        density = density*(sigma**3.d0)
+
+        ! Factor for converting the time from r.u. to ps
+        time_fact = (1.d2)*(sigma*dsqrt(atomic_mass*dble(natoms)&
+        *1.d-3/(avogadro_number*epsilon*boltzmann_constant)))
+        dt = dt/time_fact
+
+        ! Converting from r.u. to MPa
+        press_fact = epsLJ/(avogadro_number*(sigma**3)*1.d-4)
+
+        return
+    end subroutine reduced
 
 endmodule initialization

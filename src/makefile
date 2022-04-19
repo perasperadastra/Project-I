@@ -1,8 +1,6 @@
 SRC_DIR := ./modules
 BUILD_DIR := ./build
 
-
-
 FC := mpifort
 FFLAGS := -O1
 

@@ -6,6 +6,7 @@ try:
     import matplotlib.pyplot as plt
     import numpy as np
 
+
 except ModuleNotFoundError:
     print(
         "\n[!] ERROR: One or more python module(s) have not been found. Please,"
@@ -46,6 +47,10 @@ class MDSimulation:
         # Making the plot line thinner.
         plt.rc("lines", linewidth=1)
 
+        # Changing text settings.
+        plt.rc("font", family="serif")
+        plt.rcParams.update({"font.size": 12})
+
         self._gather_results()
 
     def generate_plots(self):
@@ -74,8 +79,8 @@ class MDSimulation:
         self._plot_pressure()
         self._plot_energies()
         self._plot_rdf()
+        self._move_results()
         print(f"Done - Result plots saved in ./output/{self.fold_name}")
-        # self._plot_msd()
 
     def _gather_results(self):
 
@@ -92,14 +97,6 @@ class MDSimulation:
 
         """
 
-        # TODO: Remove this later.
-        # Filename treatment to be able to insert the density into the
-        # filename, so results can be worked with iteratively.
-        # den_str = str(self.dens).replace(".", "")
-        # rdf = self.RDF_NAME + f"-{den_str}" + self.F_EXTENS
-        # ene = self.ENE_NAME + f"-{den_str}" + self.F_EXTENS
-        # msd = self.MSD_NAME + f"-{den_str}" + self.F_EXTENS
-
         temp = self.OUT_PATH + self.TMP_NAME + self.F_EXTENS
         ene = self.OUT_PATH + self.ENE_NAME + self.F_EXTENS
         press = self.OUT_PATH + self.PRE_NAME + self.F_EXTENS
@@ -111,7 +108,6 @@ class MDSimulation:
         self.energ_results = np.loadtxt(ene)
         self.press_results = np.loadtxt(press)
         self.rdf_results = np.loadtxt(rdf)
-        # self.msd_results = np.loadtxt(msd)
 
     def _result_folder(self):
 
@@ -123,7 +119,7 @@ class MDSimulation:
         current_time = time.strftime("%d-%m_%H-%M")
 
         # Timestamped folder name
-        self.fold_name = f"plots_{current_time}"
+        self.fold_name = f"results_{current_time}"
 
         # Creating the folder if the folder does not already exist
         if self.fold_name not in os.listdir(self.OUT_PATH):
@@ -140,7 +136,7 @@ class MDSimulation:
         # Plotting the RDF
         plt.plot(self.rdf_results[:, 0], self.rdf_results[:, 1])
         plt.xlim(self.rdf_results[0, 0], self.rdf_results[-2, 0])
-        plt.title("Radial Distribution Function")
+        # plt.title("Radial Distribution Function")
         plt.xlabel(r"$r$ $(\AA)$")
         plt.ylabel(r"$g(r)$")
         plt.grid()
@@ -163,8 +159,8 @@ class MDSimulation:
         # Plotting the Temperature
         plt.plot(self.temp_results[:, 0], self.temp_results[:, 1])
         plt.xlim(self.temp_results[0, 0], self.temp_results[-1, 0])
-        plt.title("Temperature")
-        plt.xlabel("Time (r.u.)")
+        # plt.title("Temperature")
+        plt.xlabel("time (ps)")
         plt.ylabel("$T$ ($K$)")
 
         # Preparing a path for the T plot image.
@@ -185,9 +181,9 @@ class MDSimulation:
         # Plotting the pressure
         plt.plot(self.press_results[:, 0], self.press_results[:, 1])
         plt.xlim(self.press_results[0, 0], self.press_results[-1, 0])
-        plt.title(r"Pressure")
-        plt.xlabel(r"Time (r.u.)")
-        plt.ylabel(r"Pressure $P$ (r.u.)")
+        # plt.title(r"Pressure")
+        plt.xlabel(r"time (ps)")
+        plt.ylabel(r"Pressure (MPa)")
         plt.grid()
 
         # Preparing a path for the P plot image.
@@ -206,9 +202,9 @@ class MDSimulation:
         """
 
         # Plotting the MSD
+        # ##plt.title("Mean Square Displacement")
         plt.plot(self.msd_results[:, 0], self.msd_results[:, 1])
         plt.xlim(self.msd_results[0, 0], self.msd_results[-1, 0])
-        plt.title("Mean Square Displacement")
         plt.xlabel(r"$r$ $(\AA)$")
         plt.ylabel(r"$g(r)$")
         plt.grid()
@@ -241,14 +237,14 @@ class MDSimulation:
         n_all = self.OUT_PATH + self.fold_name + "/ene-all" + "plot.png"
 
         # Names for the x and y axis
-        x_lab = r"Time (r.u.)"
-        y_lab = r"$E/N$ (r.u.)"
+        x_lab = r"time (ps)"
+        y_lab = r"energy $E/N$ ($\frac{kcal}{mol}$)"
 
         # Preparing the plot for the potential energy
+        # plt.title(r"Potential energy")
         plt.tight_layout()
         plt.plot(self.energ_results[:, 0], self.energ_results[:, 1])
         plt.xlim(self.energ_results[0, 0], self.energ_results[-1, 0])
-        plt.title(r"Potential energy")
         plt.xlabel(x_lab)
         plt.ylabel(y_lab)
         plt.grid()
@@ -258,9 +254,9 @@ class MDSimulation:
         plt.clf()
 
         # Preparing the plot for the kinetic energy
+        # plt.title(r"Kinetic energy")
         plt.plot(self.energ_results[:, 0], self.energ_results[:, 2])
         plt.xlim(self.energ_results[0, 0], self.energ_results[-1, 0])
-        plt.title(r"Kinetic energy")
         plt.xlabel(x_lab)
         plt.ylabel(y_lab)
         plt.grid()
@@ -270,9 +266,9 @@ class MDSimulation:
         plt.clf()
 
         # Preparing the plot for the total energy
+        # plt.title(r"Total energy")
         plt.plot(self.energ_results[:, 0], self.energ_results[:, 3])
         plt.xlim(self.energ_results[0, 0], self.energ_results[-1, 0])
-        plt.title(r"Total energy")
         plt.xlabel(x_lab)
         plt.ylabel(y_lab)
         plt.grid()
@@ -282,6 +278,7 @@ class MDSimulation:
         plt.clf()
 
         # Plotting all of the energies at once
+        # plt.title(r"All energies")
         plt.plot(
             self.energ_results[:, 0],
             self.energ_results[:, 1],
@@ -298,7 +295,6 @@ class MDSimulation:
             label=r"Total Energy",
         )
 
-        plt.title(r"All energies")
         plt.legend()
         plt.xlabel(x_lab)
         plt.ylabel(y_lab)
@@ -309,66 +305,25 @@ class MDSimulation:
         plt.savefig(n_all, bbox_inches="tight", dpi=500)
         plt.clf()
 
+    def _move_results(self):
+        """
+        Moves the result files from the ./output directory to
+        the ./output/results_%d-%m_%H-%M directory.
+        """
 
-# def get_densities() -> set:
+        # Gathering all result files
+        fl = [f for f in os.listdir(self.OUT_PATH) if f.endswith(self.F_EXTENS)]
+        fl.append(f"{self.OUT_PATH}/trajectory.xyz")
 
-#     """
-#     Gathers values for densities used in MD calculations from the filenames
-#     of '.dat' MD result files.
-
-#     Returns
-#     -------
-#     set
-#         A set containing all of the unique densities found in the CWD.
-#     """
-
-#     # Gathering all of the possible result files
-#     dat_files = [fil for fil in os.listdir() if fil.endswith(".dat")]
-#     dens_list = []
-
-#     for fil in dat_files:
-
-#         # This try block is to filter non-compatible files, as incompatible
-#         # files will raise a ValueError and they can just be ignored.
-#         try:
-#             # Getting the index of the hyphen in the filename
-#             ini = fil.index("-")
-
-#             # Getting the index of the dot in the filename
-#             dot = fil.index(".")
-
-#             # Slicing the filename to get the density as a string
-#             dens = fil[ini + 1 : dot]
-
-#             # Getting the middle part of the density string to be able to
-#             # add a dot
-#             mid = round(len(dens) / 2)
-#             dens = float(dens[:mid] + "." + dens[mid:])
-
-#             # Saving the formatted density in a list
-#             dens_list.append(dens)
-
-#         # The index method raises an error if the string is not found. We want
-#         # to ignore files that don't have the desired string.
-#         except ValueError:
-#             pass
-
-#     # Converting the list into a set to remove repeated densities.
-#     dens_list = set(dens_list)
-
-#     return dens_list
+        # Moving the files
+        for f in fl:
+            os.replace(
+                f"{self.OUT_PATH}/{f}",
+                f"{self.OUT_PATH}/{self.fold_name}/{f}",
+            )
 
 
 if __name__ == "__main__":
 
-    plt.rc("font", family="serif")
-    plt.rcParams.update({"font.size": 12})
-
     sim = MDSimulation()
     sim.generate_plots()
-
-    # TODO: Previous iteration of the code. Delete this later.
-    # dens_list = get_densities()
-    # for dens in dens_list:
-    #    sim = MDSimulation(dens)
-    #    sim.generate_plots()
