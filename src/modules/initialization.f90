@@ -75,6 +75,7 @@ contains
 ! Input:
 !         - N (number particles of one side)(in): inegter scalar
 !         - Boxlength (longitude of one side)(in): double precision scalar
+!         - sigma (reduced units for longitude)(in): integer scalar
 !
 ! Output:
 !         - r (positions of the atoms)(out): double precision array
@@ -140,6 +141,7 @@ contains
 ! Input:
 !         - N (number particles of one side)(in): inegter scalar
 !         - Boxlength (longitude of one side)(in): double precision scalar
+!         - sigma (reduced units for longitude)(in): integer scalar
 !
 ! Output:
 !         - r (positions of the atoms)(out): double precision array
@@ -218,6 +220,7 @@ contains
 ! Input:
 !         - N (number particles of one side)(in): inegter scalar
 !         - Boxlength (longitude of one side)(in): double precision scalar
+!         - sigma (reduced units for longitude)(in): integer scalar
 !
 ! Output:
 !         - r (positions of the atoms)(out): double precision array
