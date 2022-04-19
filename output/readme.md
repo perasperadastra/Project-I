@@ -21,6 +21,9 @@ Containing the temporal evolution:
 
   * **trajectory.xyz**: It contains the trajectory of the system time evolution every given number of time steps specified in the input in a xyz format, intended to be rendered using VMD software.
 
+Containing simulation performance
+  * **performance.dat**: Contains the number of the particles, the processors used and the CPU time of simulation
+
 The plots:
  * **ene-allplot.png**: Evolution of the kinetic, potential and total energy.
  * **ene-kinplot.png**: Evolution of the kinetic energy.
