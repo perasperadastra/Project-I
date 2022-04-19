@@ -39,6 +39,6 @@ clean:
 ## 6. check paralel - perform parallel benchmarking
 check_paralel:
 	@echo "Checking parallel performance."
-	./src/modules/check_paralel.sh -m $($MPI_maxP) -d $($MPI_minP) -s $($MPI_stepP)
+	./src/modules/check_paralel.sh -m $(MPI_maxP) -d $(MPI_minP) -s $(MPI_stepP)
 
 .PHONY : help
