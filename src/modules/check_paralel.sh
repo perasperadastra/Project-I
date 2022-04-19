@@ -37,7 +37,8 @@ touch ./output/performance.dat
 echo "" > ./output/performance.dat
 # Change in elongation of the simulation
 sed -i "s/integer::ntimes=.*\!/integer::ntimes=1000  !/" ./input/parameter.h
-
+touch bench.log
+echo "" > bench.log
 for Length in 5 10 22 47;
 do
 
@@ -50,7 +51,7 @@ do
         grep "integer::ntimes" ./input/parameter.h
         touch ./src/main.f90
         make -C ./src/
-        mpirun -np $c ./src/program.exe &
+        mpirun -np $c ./src/program.exe >> bench.log &
         echo "PID $!"
         wait
         #cat ./output/performance.dat
