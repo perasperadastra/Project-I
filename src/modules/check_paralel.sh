@@ -1,4 +1,6 @@
 #!/usr/bin/bash
+# Bash file master of the benchmark tool.
+
 while getopts "m:d:s:" flag
 do
         case ${flag} in
@@ -16,11 +18,11 @@ while [ -h "$SOURCE" ]; do # resolve $SOURCE until the file is no longer a symli
 done
 DIR=$( cd -P "$( dirname "$SOURCE" )" >/dev/null 2>&1 && pwd )
 
-#echo $(($(($maxP))*$(($real_step))))
 
 step=$(($step))
 maxP=$(($maxP))
 minP=$(($minP))
+
 # Data fixing
 if [ $step -le 0 ]
 then
@@ -33,12 +35,16 @@ then
         echo "Wrong step size in -m option, $maxP is not a good value"
         exit 1
 fi
+
 touch ./output/performance.dat
 echo "" > ./output/performance.dat
+
 # Change in elongation of the simulation
 sed -i "s/integer::ntimes=.*\!/integer::ntimes=1000  !/" ./input/parameter.h
+
 touch bench.log
 echo "" > bench.log
+
 for Length in 5 10 22 47;
 do
 
@@ -54,7 +60,6 @@ do
         mpirun -np $c ./src/program.exe >> bench.log &
         echo "PID $!"
         wait
-        #cat ./output/performance.dat
 done
 done
 echo "----------"
