@@ -42,3 +42,5 @@ check_paralel:
 	./src/modules/check_paralel.sh -m $(MPI_maxP) -d $(MPI_minP) -s $(MPI_stepP)
 
 .PHONY : help
+help:
+	@sed -n 's/^##//p' makefile
